@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="flatbuffers.js"></script>
+    <script src="schema_generated.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("button").click(function(){
+                $.ajax({
+                    url: "/api"
+                }).done(function (data) {
+                    if ( console && console.log ) {
+                        console.log( "Sample of data:", data.slice( 0, 100 ) );
+                    }
+
+                    var buf = new flatbuffers.ByteBuffer(data);
+                    console.log(buf);
+
+                    // Get an accessor to the root object inside the buffer.
+                    var monster = MyGame.Sample.Monster.getRootAsMonster(buf);
+
+                    var hp = monster.hp();
+                    var mana = monster.mana();
+                    var name = monster.name();
+                    console.log(hp, mana, name);
+
+                    $("#div1").html(monster)
+                });
+
+            });
+        });
+    </script>
+
+</head>
+    <body>
+        <button>Call monster!</button>
+        <div id="div1"></div>
+    </body>
+</html>
